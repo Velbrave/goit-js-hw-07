@@ -2,10 +2,12 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 console.log(galleryItems);
 
-const galleryEl = document.querySelector('.gallery')
+const galleryEl = document.querySelector('.gallery');
 
 function createGalleryMarkup(items) {
-  return items.map((item) => `<div class="gallery__item">
+  return items
+    .map(
+      item => `<div class="gallery__item">
   <a class="gallery__link" href="${item.original}">
     <img
       class="gallery__image"
@@ -14,23 +16,35 @@ function createGalleryMarkup(items) {
       alt="${item.description}"
     />
   </a>
-</div>`).join('');
+</div>`
+    )
+    .join('');
 }
 
 const addGalleryMarkup = createGalleryMarkup(galleryItems);
 galleryEl.innerHTML = addGalleryMarkup;
 galleryEl.addEventListener('click', onImagesClick);
+
 function onImagesClick(event) {
-  blockStandartAction(event);
+  blockStandartActions(event);
   if (event.target.nodeName !== 'IMG') {
     return;
   }
+
+  const instance = basicLightbox.create(`
+  <img src="${event.target.dataset.source}" width="800" height="600">
+`);
+  instance.show();
+
+  galleryEl.addEventListener('keydown', event => {
+    if (event.code === 'Escape') {
+      instance.close();
+    }
+  });
 }
-const instance = basicLightbox.create(``)
-// document.querySelector('button.image').onclick = () => {
 
-// 	basicLightbox.create(`
-// 		<img width="1400" height="900" src="https://placehold.it/1400x900">
-// 	`).show()
+function blockStandartActions(event) {
+  event.preventDefault();
+}
 
-// }
+
